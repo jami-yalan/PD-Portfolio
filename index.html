@@ -357,10 +357,13 @@
       height: auto;
       border-radius: 10px;
       box-shadow: 0 8px 28px rgba(0,0,0,.24);
+      background: #fff;
     }
     .fcard-2 img { width: 132px; }
-    .folder-item:nth-child(1) .fcard-2 img { width: 160px; }
-    .folder-item:nth-child(2) .fcard-2 img { width: 176px; }
+    .folder-item:nth-child(1) .fcard-1 img { width: 114px; }
+    .folder-item:nth-child(1) .fcard-2 img { width: 176px; }
+    .folder-item:nth-child(2) .fcard-1 img { width: 173px; }
+    .folder-item:nth-child(2) .fcard-2 img { width: 136px; }
     .folder-item:nth-child(3) .fcard-2 img { width: 160px; }
 
     .fcard-3 img {
@@ -826,6 +829,10 @@
       align-self: stretch;
       display: flex;
       flex-direction: column;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      transform: scale(0.9);
+      transform-origin: top center;
     }
     .research-stretch img,
     .research-stretch video {
@@ -856,8 +863,115 @@
     .pair-journey .case-img-break { background: #fff; }
     .pair-journey img { width: 100%; height: 340px; object-fit: contain; object-position: center; display: block; }
 
+    /* ─── CAROUSEL CHEVRONS ──────────────────────────────────── */
+    .case-carousel { position: relative; }
+    .chev {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(0,0,0,.45);
+      border: none; color: #fff;
+      font-size: 1.25rem; line-height: 1;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity .2s ease, background .2s ease;
+      z-index: 2;
+    }
+    .case-carousel:hover .chev { opacity: 1; }
+    .chev:hover { background: rgba(0,0,0,.72); }
+    .chev-prev { left: .55rem; }
+    .chev-next { right: .55rem; }
+
+    /* ─── PROTOTYPE CARDS ────────────────────────────────────── */
+    .proto-pair {
+      display: flex;
+      gap: 1rem;
+      margin: 2rem 0;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .proto-card {
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      display: block;
+      text-decoration: none;
+      cursor: pointer;
+      background: transparent;
+      box-shadow: 0 8px 40px rgba(0,0,0,.18);
+      transition: transform .35s cubic-bezier(0.34,1.56,0.64,1), box-shadow .35s ease;
+    }
+    .proto-card:hover { transform: translateY(-4px); box-shadow: 0 18px 56px rgba(0,0,0,.26); }
+
+    .proto-card--phone   { flex: 0 0 175px; height: 360px; border-radius: 28px; }
+    .proto-card--ipad    { flex: 0 0 480px; height: 360px; }
+    .proto-card--journey {
+      flex: 0 1 547px;
+      aspect-ratio: 742 / 488;
+      min-width: 440px;
+      cursor: zoom-in;
+    }
+
+    .proto-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .35s ease;
+    }
+    .proto-card:hover img { transform: scale(1.03); }
+
+    .proto-label {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      font-size: .68rem;
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.75);
+      transition: opacity .2s ease;
+    }
+    .proto-card:hover .proto-label { opacity: 0; }
+
+    .proto-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .25s ease;
+    }
+    .proto-card:hover .proto-overlay { background: rgba(15,5,25,.6); }
+
+    .proto-cta {
+      padding: .55rem 1.4rem;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 100px;
+      color: #fff;
+      font-size: .82rem;
+      font-weight: 400;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity .25s ease, transform .25s ease, background .2s;
+    }
+    .proto-card:hover .proto-cta { opacity: 1; transform: translateY(0); }
+    .proto-cta:hover { background: rgba(255,255,255,.22); }
+
     /* ─── BEYOND ─────────────────────────────────────────────── */
-    .beyond { border-top: 1px solid var(--border-soft); }
+    .beyond {
+      border-top: 1px solid var(--border-soft);
+      background-image: url('Bg.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
 
     .beyond-grid {
       display: grid;
@@ -1054,6 +1168,8 @@
       .hero { padding: 5rem 2.5rem 3rem; }
       .about-grid { gap: 4rem; }
       .beyond-grid { gap: 3rem; }
+      .folder-item:nth-child(2) { left: 125px; }
+      .folder-item:nth-child(3) { left: 245px; }
     }
 
     @media (max-width: 900px) {
@@ -1067,10 +1183,13 @@
       .nav-links { display: none; }
       .hamburger { display: flex; }
       .hero-inner { grid-template-columns: 1fr; gap: 1rem; }
+      .proto-pair { justify-content: center; }
+      .folder-name { font-size: .62rem; }
+      .folder-sub  { font-size: .50rem; }
       .cards-stack { height: 270px; }
       .folder-icon-img { width: 108px; }
       .folder-item:nth-child(1) { left: 0; }
-      .folder-item:nth-child(2) { left: 112px; bottom: 20px; }
+      .folder-item:nth-child(2) { left: 120px; bottom: 20px; }
       .folder-item:nth-child(3) { left: 222px; bottom: -8px; }
       .folder-imgs { width: 210px; bottom: 38px; }
       .fcard img { width: 68px; }
@@ -1148,11 +1267,11 @@
       <!-- Farmacias Peruanas · purple folder -->
       <div class="folder-item" onclick="openProject(0)">
         <div class="folder-imgs">
-          <div class="fcard fcard-1"><img src="Farmacias Research.png" alt="Research" /></div>
-          <div class="fcard fcard-2"><img src="Farmacias Result.png"   alt="Design system" /></div>
-          <div class="fcard fcard-3"><img src="Farmacias - Figma.png"  alt="Figma" /></div>
+          <div class="fcard fcard-1"><img src="Farmacias peruanas/Farmacias peruanas research 1.jpg" alt="Research" /></div>
+          <div class="fcard fcard-2"><img src="Farmacias peruanas/Farmacias peruanas result.png" alt="Result" /></div>
+          <div class="fcard fcard-3"><img src="Farmacias peruanas/Pencil.png" alt="Pencil" /></div>
         </div>
-        <img class="folder-icon-img" src="Folder Royal London.png" alt="Farmacias Peruanas" />
+        <img class="folder-icon-img" src="Farmacias peruanas/Folder morado.png" alt="Farmacias Peruanas" />
         <div class="folder-label">
           <div class="folder-name">Farmacias Peruanas</div>
           <div class="folder-sub">Operations Platform</div>
@@ -1162,11 +1281,11 @@
       <!-- Autodesk · blue folder -->
       <div class="folder-item" onclick="openProject(1)">
         <div class="folder-imgs">
-          <div class="fcard fcard-1"><img src="Autodesk_4.png" alt="Before" /></div>
-          <div class="fcard fcard-2"><img src="Autodesk_9.png" alt="After" /></div>
-          <div class="fcard fcard-3"><img src="Autodesk_3.png" alt="Components" /></div>
+          <div class="fcard fcard-1"><img src="Autodesk/Autodesk result 1.png" alt="Result" /></div>
+          <div class="fcard fcard-2"><img src="Autodesk/Autodesk research.png" alt="Research" /></div>
+          <div class="fcard fcard-3"><img src="Autodesk/User testing.png" alt="User testing icon" /></div>
         </div>
-        <img class="folder-icon-img" src="Folder Interbank.png" alt="Autodesk" />
+        <img class="folder-icon-img" src="Autodesk/Folder verde.png" alt="Autodesk" />
         <div class="folder-label">
           <div class="folder-name">Autodesk</div>
           <div class="folder-sub">Design System Migration</div>
@@ -1176,11 +1295,11 @@
       <!-- NHS AfterCare · green folder -->
       <div class="folder-item" onclick="openProject(2)">
         <div class="folder-imgs">
-          <div class="fcard fcard-1"><img src="NHS Research.jpg" alt="Research" /></div>
-          <div class="fcard fcard-2"><img src="NHS Result.jpg"   alt="App screens" /></div>
-          <div class="fcard fcard-3"><img src="Figma - NHS.png"  alt="Figma" /></div>
+          <div class="fcard fcard-1"><img src="NHS/AfterCare Research.jpg" alt="Research" /></div>
+          <div class="fcard fcard-2"><img src="NHS/AfterCare Result.jpg"   alt="App screens" /></div>
+          <div class="fcard fcard-3"><img src="NHS/Figma.png"  alt="Figma" /></div>
         </div>
-        <img class="folder-icon-img" src="Folder NHS.png" alt="NHS Pioneer" />
+        <img class="folder-icon-img" src="NHS/Folder celeste.png" alt="NHS Pioneer" />
         <div class="folder-label">
           <div class="folder-name">NHS Pioneer</div>
           <div class="folder-sub">AfterCare+</div>
@@ -1408,13 +1527,13 @@
               <ul>
                 <li><strong>Prioritisation workshop:</strong> Ran a rapid workshop with the operations and product team to map all existing tools, identify critical pain points and agree on a phased delivery sequence based on emergency impact.</li>
                 <li><strong>Design system first:</strong> Rather than designing screens in isolation, started with a design system that could work across web and mobile. This meant each module shipped with consistent components from day one.</li>
-                <li><strong>Capacity scheduling:</strong> Designed the AM/PM, Programado and Express delivery window management modules, including state logic for open, closed, and partially available windows across multiple store locations.</li>
+                <li><strong>Capacity scheduling:</strong> Designed the AM/PM, Scheduled and Express delivery window management modules, including state logic for open, closed, and partially available windows across multiple store locations.</li>
                 <li><strong>Driver app:</strong> Designed a separate Android app for delivery drivers covering order assignment, routing, status updates, cancellation flows and offline error states for areas with poor connectivity.</li>
                 <li><strong>Modular shipping:</strong> Each module was designed and shipped independently in sprints, with the design system ensuring visual and interaction consistency across the growing suite.</li>
               </ul>
             </div>
             <div class="case-block-img research-stretch" onclick="openLightbox(0,0)">
-              <img src="Farmacias Research.png" alt="Design system" />
+              <img src="Farmacias peruanas/Farmacias peruanas research 1.jpg" alt="Research" />
             </div>
             <div class="case-block">
               <div class="case-block-label">Outcomes</div>
@@ -1434,10 +1553,15 @@
           </div>
           <div class="case-img-pair">
             <div class="case-img-break pair-result" onclick="openLightbox(0,1)">
-              <img src="Farmacias Result.png" alt="Platform screens" />
+              <img src="Farmacias peruanas/Farmacias peruanas result.png" alt="Result" />
             </div>
-            <div class="case-img-break pair-journey" onclick="openLightbox(0,2)">
-              <img src="Farmacias - Journey.png" alt="Driver app flows" />
+            <div class="case-img-break pair-journey case-carousel"
+                 data-imgs='["Farmacias peruanas/Farmacias peruanas journey 1.png","Farmacias peruanas/Farmacias peruanas journey 2.png","Farmacias peruanas/Farmacias peruanas journey 3.png","Farmacias peruanas/Farmacias peruanas journey 4.png","Farmacias peruanas/Farmacias peruanas journey 5.png","Farmacias peruanas/Farmacias peruanas journey 6.png","Farmacias peruanas/Farmacias peruanas journey 7.png"]'
+                 data-lb='[2,3,4,5,6,7,8]' data-idx="0"
+                 onclick="openLightbox(0, JSON.parse(this.dataset.lb)[+this.dataset.idx])">
+              <img src="Farmacias peruanas/Farmacias peruanas journey 1.png" alt="Journey" />
+              <button class="chev chev-prev" onclick="event.stopPropagation(); carouselStep(this.closest('.case-carousel'), -1)">&#8249;</button>
+              <button class="chev chev-next" onclick="event.stopPropagation(); carouselStep(this.closest('.case-carousel'),  1)">&#8250;</button>
             </div>
           </div>
           <div class="case-block case-takeaways">
@@ -1480,7 +1604,7 @@
               </ul>
             </div>
             <div class="case-block-img research-stretch" onclick="openLightbox(1,0)">
-              <img src="Autodesk_3.png" alt="Component states documentation" />
+              <img src="Autodesk/Autodesk research.png" alt="Research" />
             </div>
             <div class="case-block">
               <div class="case-block-label">Outcomes</div>
@@ -1498,11 +1622,21 @@
             </div>
           </div>
           <div class="case-img-pair">
-            <div class="case-img-break pair-result" onclick="openLightbox(1,1)">
-              <img src="Autodesk_8.png" alt="Before: old BCpro colours" />
+            <div class="case-img-break pair-result case-carousel"
+                 data-imgs='["Autodesk/Autodesk result 1.png","Autodesk/Autodesk result 2.png","Autodesk/Autodesk result 3.png"]'
+                 data-lb='[1,3,5]' data-idx="0"
+                 onclick="openLightbox(1, JSON.parse(this.dataset.lb)[+this.dataset.idx])">
+              <img src="Autodesk/Autodesk result 1.png" alt="Result" />
+              <button class="chev chev-prev" onclick="event.stopPropagation(); carouselStep(this.closest('.case-carousel'), -1)">&#8249;</button>
+              <button class="chev chev-next" onclick="event.stopPropagation(); carouselStep(this.closest('.case-carousel'),  1)">&#8250;</button>
             </div>
-            <div class="case-img-break pair-journey" onclick="openLightbox(1,2)">
-              <img src="Autodesk_9.png" alt="After: new Alloy components" />
+            <div class="case-img-break pair-journey case-carousel"
+                 data-imgs='["Autodesk/Autodesk journey 1.png","Autodesk/Autodesk journey 2.png","Autodesk/Autodesk journey 3.png"]'
+                 data-lb='[2,4,6]' data-idx="0"
+                 onclick="openLightbox(1, JSON.parse(this.dataset.lb)[+this.dataset.idx])">
+              <img src="Autodesk/Autodesk journey 1.png" alt="Journey" />
+              <button class="chev chev-prev" onclick="event.stopPropagation(); carouselStep(this.closest('.case-carousel'), -1)">&#8249;</button>
+              <button class="chev chev-next" onclick="event.stopPropagation(); carouselStep(this.closest('.case-carousel'),  1)">&#8250;</button>
             </div>
           </div>
           <div class="case-block case-takeaways">
@@ -1544,7 +1678,7 @@
               </ul>
             </div>
             <div class="case-block-img research-stretch" onclick="openLightbox(2,0)">
-              <img src="NHS Research.jpg" alt="Research" />
+              <video src="NHS/AfterCare- video.mp4" autoplay muted loop playsinline></video>
             </div>
             <div class="case-block">
               <div class="case-block-label">Outcomes</div>
@@ -1562,12 +1696,23 @@
               <p>AfterCare+ is a two-sided digital platform. The patient-facing mobile app gives people a personalised home showing reminders, health data, shared resources and direct access to their nurse. Health metrics are tracked over time with goal-setting, giving patients visibility of their own progress. The nurse-facing tablet app provides a patient dashboard with key metrics at a glance, a tool for creating and sharing personalised care collections, an anatomical sketch tool for wound documentation, and appointment scheduling. Both interfaces were designed to work independently but feel like parts of the same connected system.</p>
             </div>
           </div>
-          <div class="case-img-pair">
-            <div class="case-img-break pair-result" onclick="openLightbox(2,1)">
-              <img src="NHS Result.jpg" alt="App screens" />
-            </div>
-            <div class="case-img-break pair-journey" onclick="openLightbox(2,2)">
-              <img src="NHS - Journey.png" alt="User flows" />
+          <div class="proto-pair">
+            <a class="proto-card proto-card--phone" href="https://www.figma.com/proto/N5kzwV30pBV4nVJFdVedkv/Patient-App---AfterCare?page-id=0%3A1&node-id=1-44770&p=f&viewport=-149%2C110%2C0.29&t=6XakZDNb2SSG3Xbo-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=6%3A529" target="_blank" rel="noopener" aria-label="Try patient app prototype">
+              <img src="NHS/AfterCare-patient.gif" alt="Patient iPhone app prototype" />
+              <div class="proto-label">Patient · iPhone</div>
+              <div class="proto-overlay">
+                <span class="proto-cta">Try prototype →</span>
+              </div>
+            </a>
+            <a class="proto-card proto-card--ipad" href="https://www.figma.com/proto/zl8C9EIqJ2LaoO6NFysYHq/Nurse-App---AfterCare?page-id=0%3A1&node-id=16-2052&p=f&viewport=258%2C168%2C0.18&t=KBApdiVnWPVHDgz5-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=1%3A2" target="_blank" rel="noopener" aria-label="Try clinician iPad app prototype">
+              <img src="NHS/AfterCare-ipad.gif" alt="Clinician iPad app prototype" />
+              <div class="proto-label">Clinician · iPad</div>
+              <div class="proto-overlay">
+                <span class="proto-cta">Try prototype →</span>
+              </div>
+            </a>
+            <div class="proto-card proto-card--journey" onclick="openLightbox(2,1)">
+              <img src="NHS/AfterCare - Journey.png" alt="User journey map" />
             </div>
           </div>
           <div class="case-block case-takeaways">
@@ -1728,19 +1873,28 @@
   /* ── Lightbox ───────────────────────────────────────────── */
   const projectImages = [
     [
-      'NHS Research.jpg',
-      'NHS Result.jpg',
-      'NHS - Journey.png'
+      'Farmacias peruanas/Farmacias peruanas research 1.jpg',
+      'Farmacias peruanas/Farmacias peruanas result.png',
+      'Farmacias peruanas/Farmacias peruanas journey 1.png',
+      'Farmacias peruanas/Farmacias peruanas journey 2.png',
+      'Farmacias peruanas/Farmacias peruanas journey 3.png',
+      'Farmacias peruanas/Farmacias peruanas journey 4.png',
+      'Farmacias peruanas/Farmacias peruanas journey 5.png',
+      'Farmacias peruanas/Farmacias peruanas journey 6.png',
+      'Farmacias peruanas/Farmacias peruanas journey 7.png'
     ],
     [
-      'Farmacias Research.png',
-      'Farmacias Result.png',
-      'Farmacias - Journey.png'
+      'Autodesk/Autodesk research.png',
+      'Autodesk/Autodesk result 1.png',
+      'Autodesk/Autodesk journey 1.png',
+      'Autodesk/Autodesk result 2.png',
+      'Autodesk/Autodesk journey 2.png',
+      'Autodesk/Autodesk result 3.png',
+      'Autodesk/Autodesk journey 3.png'
     ],
     [
-      'Einstein Research.png',
-      'Einstein Result.png',
-      'Einstein - Landing.png'
+      'NHS/AfterCare- video.mp4',
+      'NHS/AfterCare - Journey.png'
     ]
   ];
 
@@ -1828,7 +1982,10 @@
 
   document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
 
-  /* ── Back to top ─�.scrollY > 400);
+  /* ── Back to top ── */
+  const topBtn = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    topBtn.classList.toggle('visible', window.scrollY > 400);
   }, { passive: true });
   topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
@@ -1911,17 +2068,13 @@
       }, 110);
     }
 
-    const hasHover = window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 901px)').matches;
-
     cards.forEach(card => {
-      if (hasHover) {
-        card.addEventListener('mouseenter', () => {
-          if (!locked) showPreview(card.dataset.preview, card.dataset.scale || featureScale);
-        });
-        card.addEventListener('mouseleave', () => {
-          if (!locked) showPreview(defaultSrc, defaultScale);
-        });
-      }
+      card.addEventListener('mouseenter', () => {
+        if (!locked && window.matchMedia('(hover: hover)').matches) showPreview(card.dataset.preview, card.dataset.scale || featureScale);
+      });
+      card.addEventListener('mouseleave', () => {
+        if (!locked && window.matchMedia('(hover: hover)').matches) showPreview(defaultSrc, defaultScale);
+      });
       card.addEventListener('click', e => {
         e.stopPropagation();
         if (locked === card) {
@@ -1945,6 +2098,14 @@
       }
     });
   })();
+
+  /* ── Carousel chevrons ── */
+  function carouselStep(card, dir) {
+    const imgs = JSON.parse(card.dataset.imgs);
+    let idx = (+card.dataset.idx + dir + imgs.length) % imgs.length;
+    card.dataset.idx = idx;
+    card.querySelector('img').src = imgs[idx];
+  }
 
 </script>
 </body>
