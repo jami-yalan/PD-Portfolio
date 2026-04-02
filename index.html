@@ -1873,9 +1873,12 @@
     const delay = collapsingCard ? 580 : 80;
     setTimeout(() => {
       const nav = document.querySelector('nav') || document.querySelector('header');
-      const offset = nav ? nav.offsetHeight + 16 : 24;
-      const y = card.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      const navH = nav ? nav.offsetHeight : 0;
+      const rect = card.getBoundingClientRect();
+      if (rect.top < navH + 8) {
+        const y = rect.top + window.scrollY - navH - 16;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
     }, delay);
   }
 
