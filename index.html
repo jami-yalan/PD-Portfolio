@@ -1988,7 +1988,7 @@
     const end = performance.now() + 560;
     (function pin() {
       const diff = card.getBoundingClientRect().top - targetY;
-      if (Math.abs(diff) > 0.5) window.scrollBy(0, diff);
+      if (Math.abs(diff) > 0.5) window.scrollBy({ top: diff, behavior: 'instant' });
       if (performance.now() < end) requestAnimationFrame(pin);
     })();
   }
