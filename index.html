@@ -726,6 +726,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: zoom-in;
+    }
+    .lightbox-img-wrap.zoomed {
+      cursor: zoom-out;
+      overflow: auto;
+      max-width: 95vw;
+      max-height: 92vh;
+      align-items: flex-start;
+      justify-content: flex-start;
     }
     .lightbox-img-wrap img,
     .lightbox-img-wrap video {
@@ -735,6 +744,12 @@
       box-shadow: 0 12px 48px rgba(0,0,0,.18);
       object-fit: contain;
       display: block;
+    }
+    .lightbox-img-wrap.zoomed img {
+      max-width: none;
+      max-height: none;
+      width: auto;
+      height: auto;
     }
     #lbWrap:not(.is-video) #lbVideo { display: none; }
     #lbWrap.is-video #lbImg { display: none; }
@@ -826,22 +841,21 @@
     .case-grid > .case-block-img { margin-bottom: 0; }
 
     .research-stretch {
-      align-self: stretch;
-      display: flex;
-      flex-direction: column;
+      align-self: start;
       border-radius: 0 !important;
       box-shadow: none !important;
       transform: scale(0.9);
-      transform-origin: top center;
+      transform-origin: top left;
     }
+    .case-list .case-card:nth-child(1) .research-stretch { transform: scale(0.99); }
+    .case-list .case-card:nth-child(2) .research-stretch { transform: none; align-self: end; }
+    .case-list .case-card:nth-child(2) .case-grid > .case-block:last-child { margin-top: -2rem; }
     .research-stretch img,
     .research-stretch video {
-      flex: 1;
-      min-height: 0;
       width: 100%;
-      object-fit: cover;
-      object-position: center top;
+      height: auto;
       display: block;
+      object-fit: contain;
     }
 
     .case-video-block { cursor: zoom-in; }
@@ -850,18 +864,19 @@
 
     .case-img-pair {
       display: flex;
+      flex-wrap: wrap;
       gap: 1rem;
       margin: 2rem 0;
       align-items: flex-start;
     }
     .case-img-pair .case-img-break { margin: 0; }
 
-    .pair-result { flex-shrink: 0; }
-    .pair-result img { height: 340px; width: auto; display: block; }
+    .pair-result { flex: 1 1 0; min-width: 380px; }
+    .pair-result img { width: 100%; height: clamp(220px, 26.5vw, 340px); object-fit: contain; object-position: center; display: block; }
 
-    .pair-journey { flex: 1; min-width: 0; }
+    .pair-journey { flex: 1 1 0; min-width: 380px; }
     .pair-journey .case-img-break { background: #fff; }
-    .pair-journey img { width: 100%; height: 340px; object-fit: contain; object-position: center; display: block; }
+    .pair-journey img { width: 100%; height: clamp(220px, 26.5vw, 340px); object-fit: contain; object-position: center; display: block; }
 
     /* ─── CAROUSEL CHEVRONS ──────────────────────────────────── */
     .case-carousel { position: relative; }
@@ -1064,6 +1079,7 @@
       object-fit: cover;
       display: block;
       border-radius: 14px;
+      pointer-events: none;
       transform: scale(1);
       transition: opacity 0.22s ease;
     }
@@ -1208,10 +1224,10 @@
       .case-body-inner { padding: 1.5rem 1.5rem 3rem; }
       .case-grid { grid-template-columns: 1fr; gap: 2rem; }
       .case-takeaways { margin-top: 0; }
-      .case-img-pair { margin: 1.5rem 0; flex-direction: column; }
-      .pair-result { flex-shrink: unset; }
+      .case-img-pair { margin: 1.5rem 0; flex-direction: column; flex-wrap: nowrap; }
+      .pair-result, .pair-journey { flex: none; width: 100%; min-width: 0; }
       .pair-result img { height: 260px; width: 100%; object-fit: contain; object-position: center; }
-      .pair-journey img { height: 260px; width: 100%; object-fit: cover; object-position: center top; }
+      .pair-journey img { height: 260px; width: 100%; object-fit: contain; object-position: center; }
       footer { grid-template-columns: 1fr; padding: 2.5rem 1.5rem; gap: 1.25rem; }
       .footer-links { justify-content: flex-start; }
       .footer-copy { text-align: left; }
@@ -1329,13 +1345,13 @@
 
       <div class="about-intro fade-up" style="transition-delay:.1s">
         <p>
-          My background is in industrial design, which taught me early that how something looks and how it works are the same problem, not two separate conversations. That lesson has stayed with me and informs my current focus on digital product design.
+          My background is in industrial design, which taught me early that aesthetics and function are the same question, just asked from different angles. That lesson has stayed with me and informs my current focus on digital product design.
         </p>
         <p>
           The ability to iterate with people's input is what pulled me fully into digital. Physical products can rarely allow that, and certainly not as fast. Understanding who you are designing for, and keeping that understanding close throughout the process, is something I care about deeply and find genuinely fulfilling.
         </p>
         <p>
-          Part of keeping that understanding close is testing continuously, not just at the end. Running it alongside the whole process is what makes products easy to understand and enjoyable to use, catching assumptions before they ship and grounding decisions in real behaviour rather than best guesses. Whether the navigation holds up, whether the layout works for someone who needs larger text, whether what seemed obvious in Figma turns out not to be when a real person uses it.
+          Part of keeping that understanding close is keeping testing close to the work the whole way through. Running it alongside the whole process is what makes products easy to understand and enjoyable to use, catching assumptions before they ship and grounding decisions in real behaviour rather than best guesses. Whether the navigation holds up, whether the layout works for someone who needs larger text, whether what seemed obvious in Figma turns out not to be when a real person uses it.
         </p>
         <p>
           And this approach works best when everyone in the room is fluent in the process but brings different backgrounds and ways of thinking, which is why I find real value in working alongside less experienced designers. Fresh eyes catch things that familiarity hides, and teaching the practice and helping others develop their own instincts is something I genuinely enjoy. It tends to make the work better for everyone involved.
@@ -1539,7 +1555,7 @@
               <div class="case-block-label">Outcomes</div>
               <div class="outcome-chips">
                 <span class="outcome-chip">Full design system covering mobile and web, shipped in under a month</span>
-                <span class="outcome-chip">Capacity scheduling module across AM/PM, Programado and Express delivery types</span>
+                <span class="outcome-chip">Capacity scheduling module across AM/PM, Scheduled and Express delivery types</span>
                 <span class="outcome-chip">Android driver app with full order management and offline error handling</span>
                 <span class="outcome-chip">Store open/close controls deployed across Lima's pharmacy network</span>
                 <span class="outcome-chip">Operations team of 20 able to manage delivery capacity in real time during the pandemic</span>
@@ -1856,7 +1872,10 @@
   function scrollToCard(card, collapsingCard) {
     const delay = collapsingCard ? 580 : 80;
     setTimeout(() => {
-      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const nav = document.querySelector('nav') || document.querySelector('header');
+      const offset = nav ? nav.offsetHeight + 16 : 24;
+      const y = card.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
     }, delay);
   }
 
@@ -1919,12 +1938,18 @@
     lbVideo.pause();
     lbVideo.src = '';
     lbWrap.classList.remove('is-video');
+    lbWrap.classList.remove('zoomed');
   }
+
+  lbWrap.addEventListener('click', () => {
+    if (!lbWrap.classList.contains('is-video')) lbWrap.classList.toggle('zoomed');
+  });
 
   function showLbItem() {
     const items  = projectImages[lbProject];
     const src    = items[lbIndex];
     const isVid  = /\.(mp4|webm|mov)$/i.test(src);
+    lbWrap.classList.remove('zoomed');
     lbWrap.classList.toggle('is-video', isVid);
     if (isVid) {
       lbVideo.src = src;
@@ -1966,7 +1991,12 @@
     document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
     if (!isOpen) {
       card.classList.add('open');
-      requestAnimationFrame(() => card.scrollIntoView({ behavior: 'instant', block: 'start' }));
+      requestAnimationFrame(() => {
+        const nav = document.querySelector('nav') || document.querySelector('header');
+        const offset = nav ? nav.offsetHeight + 16 : 24;
+        const y = card.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      });
     }
   }
 
