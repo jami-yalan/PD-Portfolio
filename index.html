@@ -1989,14 +1989,10 @@
 
   /* ── Case study accordion ───────────────────────────────── */
   function toggleCase(header) {
-    const card      = header.closest('.case-card');
-    const isOpen    = card.classList.contains('open');
-    const prevOpen  = document.querySelector('.case-card.open');
+    const card   = header.closest('.case-card');
+    const isOpen = card.classList.contains('open');
     document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
-    if (!isOpen) {
-      card.classList.add('open');
-      scrollToCard(card, prevOpen && prevOpen !== card);
-    }
+    if (!isOpen) card.classList.add('open');
   }
 
   /* ── Intersection Observer → fade-up ────────────────────── */
