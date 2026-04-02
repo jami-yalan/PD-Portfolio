@@ -1986,17 +1986,13 @@
 
   /* ── Case study accordion ───────────────────────────────── */
   function toggleCase(header) {
-    const card   = header.closest('.case-card');
-    const isOpen = card.classList.contains('open');
+    const card      = header.closest('.case-card');
+    const isOpen    = card.classList.contains('open');
+    const prevOpen  = document.querySelector('.case-card.open');
     document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
     if (!isOpen) {
       card.classList.add('open');
-      requestAnimationFrame(() => {
-        const nav = document.querySelector('nav') || document.querySelector('header');
-        const offset = nav ? nav.offsetHeight + 16 : 24;
-        const y = card.getBoundingClientRect().top + window.scrollY - offset;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-      });
+      scrollToCard(card, prevOpen && prevOpen !== card);
     }
   }
 
