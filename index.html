@@ -58,7 +58,7 @@
       --border-soft: rgba(0, 0, 0, 0.07);
     }
 
-    html { scroll-behavior: smooth; overflow-anchor: none; }
+    html { scroll-behavior: smooth; overflow-anchor: none; scroll-padding-top: 100px; }
 
     body {
       background: var(--bg);
@@ -726,16 +726,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
       cursor: zoom-in;
     }
-    .lightbox-img-wrap.zoomed {
-      cursor: zoom-out;
-      overflow: auto;
-      max-width: 95vw;
-      max-height: 92vh;
-      align-items: flex-start;
-      justify-content: flex-start;
-    }
+    .lightbox-img-wrap.zoomed { cursor: grab; }
+    .lightbox-img-wrap.zoomed.dragging { cursor: grabbing; }
     .lightbox-img-wrap img,
     .lightbox-img-wrap video {
       max-width: calc(100vw - 200px);
@@ -744,13 +739,33 @@
       box-shadow: 0 12px 48px rgba(0,0,0,.18);
       object-fit: contain;
       display: block;
+      user-select: none;
+      -webkit-user-drag: none;
     }
     .lightbox-img-wrap.zoomed img {
-      max-width: none;
-      max-height: none;
-      width: auto;
-      height: auto;
+      transform: translate(var(--lb-tx,0px), var(--lb-ty,0px)) scale(1.9);
+      transform-origin: center center;
+      border-radius: 0;
+      box-shadow: none;
+      cursor: inherit;
     }
+    .lb-zoom-out {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      padding: .45rem 1.1rem;
+      background: rgba(255,255,255,.92);
+      border: 1.5px solid var(--purple);
+      color: var(--purple);
+      border-radius: 100px;
+      font-size: .8rem;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s, background .2s;
+      z-index: 9001;
+    }
+    .lb-zoom-out.visible { opacity: 1; pointer-events: auto; }
+    .lb-zoom-out:hover { background: rgba(84,22,117,.08); }
     #lbWrap:not(.is-video) #lbVideo { display: none; }
     #lbWrap.is-video #lbImg { display: none; }
 
@@ -1828,6 +1843,7 @@
   </div>
   <button class="lightbox-btn lightbox-next" onclick="lbNext()"><svg width="8" height="14" viewBox="0 0 11 19" fill="none"><polyline points="2,1 10,9.5 2,18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <div class="lightbox-counter" id="lbCounter"></div>
+  <button class="lb-zoom-out" id="lbZoomOut">↙ Zoom out</button>
 </div>
 
 <div id="proximity-cursor"></div>
@@ -1868,19 +1884,22 @@
     a.addEventListener('click', closeNav);
   });
 
+  /* ── Scroll to card ─────────────────────────────────────── */
+  function scrollToCard(card, collapsingCard) {
+    const delay = collapsingCard ? 580 : 80;
+    setTimeout(() => {
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, delay);
+  }
+
   /* ── Open project from hero folder click ────────────────── */
   function openProject(index) {
-    const cards   = document.querySelectorAll('.case-card');
+    const cards = document.querySelectorAll('.case-card');
     if (!cards[index]) return;
-    const wasOpen = !!document.querySelector('.case-card.open');
+    const openCard = document.querySelector('.case-card.open');
     document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
     cards[index].classList.add('open');
-    setTimeout(() => {
-      const nav  = document.querySelector('nav') || document.querySelector('header');
-      const navH = nav ? nav.offsetHeight : 0;
-      const y    = cards[index].getBoundingClientRect().top + window.scrollY - navH - 16;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }, wasOpen ? 560 : 80);
+    scrollToCard(cards[index], openCard);
   }
 
   /* ── Lightbox ───────────────────────────────────────────── */
@@ -1926,24 +1945,68 @@
     document.body.style.overflow = 'hidden';
   }
 
+  /* ── Lightbox zoom / pan ────────────────────────────────── */
+  const lbZoomOut = document.getElementById('lbZoomOut');
+  let lbTx = 0, lbTy = 0, lbDragStartX = 0, lbDragStartY = 0, lbDragged = false;
+
+  function lbApplyTransform() {
+    lbImg.style.setProperty('--lb-tx', lbTx + 'px');
+    lbImg.style.setProperty('--lb-ty', lbTy + 'px');
+  }
+
+  function lbZoomReset() {
+    lbWrap.classList.remove('zoomed', 'dragging');
+    lbZoomOut.classList.remove('visible');
+    lbTx = 0; lbTy = 0;
+    lbApplyTransform();
+  }
+
+  lbWrap.addEventListener('mousedown', e => {
+    if (!lbWrap.classList.contains('zoomed')) return;
+    lbDragged = false;
+    lbDragStartX = e.clientX - lbTx;
+    lbDragStartY = e.clientY - lbTy;
+    lbWrap.classList.add('dragging');
+    e.preventDefault();
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (!lbWrap.classList.contains('dragging')) return;
+    lbDragged = true;
+    lbTx = e.clientX - lbDragStartX;
+    lbTy = e.clientY - lbDragStartY;
+    lbApplyTransform();
+  });
+
+  window.addEventListener('mouseup', () => {
+    lbWrap.classList.remove('dragging');
+  });
+
+  lbWrap.addEventListener('click', e => {
+    if (lbWrap.classList.contains('is-video') || lbDragged) { lbDragged = false; return; }
+    if (!lbWrap.classList.contains('zoomed')) {
+      lbTx = 0; lbTy = 0; lbApplyTransform();
+      lbWrap.classList.add('zoomed');
+      lbZoomOut.classList.add('visible');
+    }
+  });
+
+  lbZoomOut.addEventListener('click', e => { e.stopPropagation(); lbZoomReset(); });
+
   function closeLightbox() {
     lb.classList.remove('open');
     document.body.style.overflow = '';
     lbVideo.pause();
     lbVideo.src = '';
     lbWrap.classList.remove('is-video');
-    lbWrap.classList.remove('zoomed');
+    lbZoomReset();
   }
-
-  lbWrap.addEventListener('click', () => {
-    if (!lbWrap.classList.contains('is-video')) lbWrap.classList.toggle('zoomed');
-  });
 
   function showLbItem() {
     const items  = projectImages[lbProject];
     const src    = items[lbIndex];
     const isVid  = /\.(mp4|webm|mov)$/i.test(src);
-    lbWrap.classList.remove('zoomed');
+    lbZoomReset();
     lbWrap.classList.toggle('is-video', isVid);
     if (isVid) {
       lbVideo.src = src;
@@ -1980,17 +2043,13 @@
 
   /* ── Case study accordion ───────────────────────────────── */
   function toggleCase(header) {
-    const card    = header.closest('.case-card');
-    const isOpen  = card.classList.contains('open');
-    const targetY = card.getBoundingClientRect().top;
+    const card   = header.closest('.case-card');
+    const isOpen = card.classList.contains('open');
     document.querySelectorAll('.case-card.open').forEach(c => c.classList.remove('open'));
-    if (!isOpen) card.classList.add('open');
-    const end = performance.now() + 560;
-    (function pin() {
-      const diff = card.getBoundingClientRect().top - targetY;
-      if (Math.abs(diff) > 0.5) window.scrollBy({ top: diff, behavior: 'instant' });
-      if (performance.now() < end) requestAnimationFrame(pin);
-    })();
+    if (!isOpen) {
+      card.classList.add('open');
+      requestAnimationFrame(() => card.scrollIntoView({ behavior: 'instant', block: 'start' }));
+    }
   }
 
   /* ── Intersection Observer → fade-up ────────────────────── */
